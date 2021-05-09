@@ -1,0 +1,5 @@
+/webshop-env/
+/assets/
+.idea
+.DS_Store
+/webshop_django/webshop/static/webshop/css/sass/

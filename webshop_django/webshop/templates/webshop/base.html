@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Webshop{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'webshop/css/styles.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<div id="app">
+
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Cart</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- VUEJS COMPONENT -->
+                    <shopping-cart inline-template :items="cartItems">
+                        <div>
+                            <table class="table table-cart">
+                                <tr v-for="(item, index) in items">
+                                    <td>{ item.fields['product_name'] }</td>
+                                    <td style="width:120px">QTY:
+                                        <input v-model="item.fields['product_quantity']" class="form-control"
+                                               type="number">
+                                    </td>
+                                    <td class="text-right">{ item.fields['product_price'] | formatCurrency } €</td>
+                                    <td>
+                                        <button @click="removeItem(index)" class="btn btn-danger">X</button>
+                                    </td>
+                                </tr>
+                                <tr v-show="items.length === 0">
+                                    <td colspan="4" class="text-center">Cart is empty</td>
+                                </tr>
+                                <tr v-show="items.length > 0">
+                                    <td></td>
+                                    <td class="text-right">Cart Total</td>
+                                    <td class="text-right">{ Total | formatCurrency } €</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </shopping-cart>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <div class="container">
+
+            <a class="navbar-brand" href="/">Webshop</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="position: relative">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+
+                <form action="/" method="get" class="form-inline my-2 my-lg-0 pt-2 pt-lg-0">
+                    <input type="search" name="q" class="form-control mr-sm-2" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+
+                <div class="cart-items">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#cartModal">Cart
+                        ({cartItems.length})
+                    </button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </nav>
+
+
+    <div class="container">
+
+        <div class="product-sort">
+            <select id="sort" class="form-control">
+                <option value="" selected>Sort</option>
+                <option value="product_name">Name</option>
+                <option value="product_price">Price</option>
+            </select>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</div>
+
+{{ latest_product_list | json_script:"js-data" }}
+<script src="{% static 'webshop/js/vue.js' %}"></script>
+<script src="{% static 'webshop/js/jquery-3.5.1.slim.min.js' %}"></script>
+<script src="{% static 'webshop/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'webshop/js/app.js' %}"></script>
+</body>
+</html>
+
